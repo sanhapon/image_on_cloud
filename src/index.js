@@ -1,20 +1,7 @@
-// import React from 'react';
-// import ReactDOM from 'react-dom';
-// import './index.css';
-// import App from './containers/App';
-// import registerServiceWorker from './registerServiceWorker';
-
-// ReactDOM.render(<App />, document.getElementById('root'));
-// registerServiceWorker();
-
-
-/* eslint-disable import/default */
-
 import React from 'react';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import ReactDOM from 'react-dom';
 import injectTapEventPlugin from 'react-tap-event-plugin';
-
 import App from './containers/App';
 import LoginPage from './containers/LoginPage';
 import DashboardPage from './containers/DashboardPage';
@@ -34,6 +21,7 @@ ReactDOM.render(
         <App>
             <Switch>
                 <Route path="/login" component={LoginPage}/>
+                <PrivateRoute path="/" component={DashboardPage}/>
                 <PrivateRoute path="/dashboard" component={DashboardPage}/>
         </Switch>
         </App>
