@@ -1,21 +1,27 @@
 import React from 'react';
-import PropTypes from 'prop-types';
-import { Link } from 'react-router-dom'
 import AppBar from 'material-ui/AppBar';
 import IconButton from 'material-ui/IconButton';
-import IconMenu from 'material-ui/IconMenu';
-import MenuItem from 'material-ui/MenuItem';
-import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert';
+import Button from '@material-ui/core/Button';
 import Menu from 'material-ui/svg-icons/navigation/menu';
-import ViewModule from 'material-ui/svg-icons/action/view-module';
-import {white} from 'material-ui/styles/colors';
-import authentication from '../services/authentication';
+import { white } from 'material-ui/styles/colors';
+import { logout } from '../actions/authentication.action';
+import { connect } from 'react-redux';
 
 class Header extends React.Component {
+
+  getTitleMessage = () => {
+    return this.props.loggedIn? `ยินต้อนรับ ${this.props.username}`: ``;
+  };
+
+  onLogout = (e) => {
+    console.log('...')
+    e.preventDefault();
+    this.props.logout();
+  }
   render() {
     const {styles, handleChangeRequestNavDrawer} = this.props;
 
-    const style = {
+    const style =  {
       appBar: {
         position: 'fixed',
         top: 0,
@@ -27,56 +33,29 @@ class Header extends React.Component {
       },
       iconsRightContainer: {
         marginLeft: 20
-      }
+      },
+      logout: {
+        marginTop:6,
+        marginRight: 20,
+        color:white
+      },
     };
-
-    const getTitleMessage = ()=>{
-        return authentication.isAuthenticated? `Welcome ${authentication.username}`: ``;
-    };
-
-    const onLogout = async ()=> {
-        await authentication.signout();
-      
-    }
 
     return (
         <div>
             <AppBar
               style={{...styles, ...style.appBar}}
-              title={
-                <span>{getTitleMessage()}</span>
-              }
+              title={<span>{this.getTitleMessage()}</span>}
               iconElementLeft={
-                  <IconButton style={style.menuButton} onClick={handleChangeRequestNavDrawer}>
+                  <IconButton style={style.menuButton} onClick={this.handleChangeRequestNavDrawer}>
                     <Menu color={white} />
                   </IconButton>
               }
               iconElementRight={
                 <div style={style.iconsRightContainer}>
-                  <IconMenu color={white}
-                            iconButtonElement={
-                              <IconButton><ViewModule color={white}/></IconButton>
-                            }
-                            targetOrigin={{horizontal: 'right', vertical: 'top'}}
-                            anchorOrigin={{horizontal: 'right', vertical: 'top'}}
-                  >
-                    <MenuItem key={1} primaryText="Application 1"/>
-                    <MenuItem key={2} primaryText="Application 2"/>
-                    <MenuItem key={3} primaryText="Application 3"/>
-                  </IconMenu>
-                  <IconMenu color={white}
-                            iconButtonElement={
-                              <IconButton><MoreVertIcon color={white}/></IconButton>
-                            }
-                            targetOrigin={{horizontal: 'right', vertical: 'top'}}
-                            anchorOrigin={{horizontal: 'right', vertical: 'top'}}
-                  >
-                  
-                    <MenuItem primaryText="Sign out" 
-                                disabled={!authentication.isAuthenticated}  
-                                onClick={this.onLogout}
-                                containerElement={<Link to="/login"/>}/>
-                  </IconMenu>
+                  {this.props.loggedIn &&
+                    <Button style={style.logout} onClick={this.onLogout}>Log out</Button>
+                  }
                 </div>
               }
             />
@@ -85,9 +64,24 @@ class Header extends React.Component {
   }
 }
 
-Header.propTypes = {
-  styles: PropTypes.object,
-  handleChangeRequestNavDrawer: PropTypes.func
-};
+const mapStateToProps = (state) => {
+  const { loggedIn, payload } = state.authentication;
 
-export default Header;
+  return {
+    loggedIn: loggedIn,
+    username: payload.username,
+    role: payload.role
+  };
+}
+
+const mapDispatchToProps = (dispatch) =>{
+  return {
+    logout : () => {
+      dispatch(logout());
+    }
+  }
+}
+
+
+
+export default connect(mapStateToProps, mapDispatchToProps)(Header);

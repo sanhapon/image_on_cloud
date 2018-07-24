@@ -1,22 +1,29 @@
-const user = localStorage.getItem('user');
-const initialState = user ? {loggedIn:true, username:user.username, role:user.role} : {}
+const user = JSON.parse(localStorage.getItem('user'));
+const initialState = user ? 
+    {loggedIn:true, payload: {username:user.username, role:user.role}} : 
+    {loggedIn:false, payload: {username:'', role:''}}
 
 const authentication = (state = initialState, action) => {
+    
     switch (action.type) {
         case 'login_request':
             return {
-                loggingIn:true,
+                loggingIn: true,
                 payload: action.username
             }
-        case 'login_success':
+        case 'login_success': {
+            const { username, role } = action.payload;
             return {
                 loggedIn: true,
-                payload: user
+                payload: { username: username, role:role }
             }
+        }
         case 'login_failure':
             return {}
-        case 'logout':
-            return {}
+        case 'logout_request':
+            return {
+                loggedIn: false,
+            }
         default:
             return state;
     }
