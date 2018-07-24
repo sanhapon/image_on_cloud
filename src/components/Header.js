@@ -18,7 +18,7 @@ class Header extends React.Component {
     this.props.logout();
   }
   render() {
-    const { styles } = this.props;
+    const { styles, handleChangeRequestNavDrawer} = this.props;
 
     const style =  {
       appBar: {
@@ -46,7 +46,7 @@ class Header extends React.Component {
               style={{...styles, ...style.appBar}}
               title={<span>{this.getTitleMessage()}</span>}
               iconElementLeft={
-                  <IconButton style={style.menuButton} onClick={this.handleChangeRequestNavDrawer}>
+                  <IconButton style={style.menuButton} onClick={handleChangeRequestNavDrawer}>
                     <Menu color={white} />
                   </IconButton>
               }
@@ -68,8 +68,8 @@ const mapStateToProps = (state) => {
 
   return {
     loggedIn: loggedIn,
-    username: payload.username,
-    role: payload.role
+    username: loggedIn? payload.username : '',
+    role: loggedIn? payload.role: ''
   };
 }
 
