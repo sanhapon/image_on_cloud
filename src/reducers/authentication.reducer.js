@@ -23,6 +23,7 @@ const authentication = (state = initialState, action) => {
         case 'logout_request':
             return {
                 loggedIn: false,
+                payload: {}
             }
         default:
             return state;

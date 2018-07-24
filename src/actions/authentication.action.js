@@ -5,8 +5,8 @@ export const login = (username, password) => {
     return dispatch => {
         dispatch(login_request({username:username}));
 
-        if(username === 'test' && password === 'test') {
-            const user = {username:username, role:'staff'};
+        if(username === 'admin' && password === 'nocnocnoc') {
+            const user = {username:username, role:'administrator'};
             localStorage.setItem('user', JSON.stringify(user) );
             dispatch(login_success({username:username}));
             
@@ -19,7 +19,6 @@ export const login = (username, password) => {
 }
 
 export const logout = () => {
-    console.log('logout');
     return dispatch => {
         localStorage.removeItem('user');
         dispatch(logout_request());

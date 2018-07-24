@@ -14,12 +14,11 @@ class Header extends React.Component {
   };
 
   onLogout = (e) => {
-    console.log('...')
     e.preventDefault();
     this.props.logout();
   }
   render() {
-    const {styles, handleChangeRequestNavDrawer} = this.props;
+    const { styles } = this.props;
 
     const style =  {
       appBar: {
@@ -81,7 +80,5 @@ const mapDispatchToProps = (dispatch) =>{
     }
   }
 }
-
-
 
 export default connect(mapStateToProps, mapDispatchToProps)(Header);

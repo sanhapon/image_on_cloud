@@ -1,5 +1,4 @@
 import React from 'react';
-import { Redirect } from 'react-router';
 import { connect } from 'react-redux';
 import { login } from '../actions/authentication.action'
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
