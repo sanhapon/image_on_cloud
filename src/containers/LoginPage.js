@@ -1,5 +1,7 @@
 import React from 'react';
 import { Redirect } from 'react-router';
+import { connect } from 'react-redux';
+import { login } from '../actions/authentication.action'
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import Paper from 'material-ui/Paper';
 import RaisedButton from 'material-ui/RaisedButton';
@@ -10,13 +12,13 @@ import PersonAdd from 'material-ui/svg-icons/social/person-add';
 import Help from 'material-ui/svg-icons/action/help';
 import TextField from 'material-ui/TextField';
 import ThemeDefault from '../theme-default';
-import authentication from '../services/authentication';
+
 
 class LoginPage extends React.Component {
 
   constructor(props) {
     super(props);
-    this.state = {username:'', password:'', redirectToReferrer:false};
+    this.state = { username:'', password:'' };
 
   }
   
@@ -85,23 +87,16 @@ class LoginPage extends React.Component {
     this.setState( { [name]: value });
   }
 
-  onClickLogin = async () => {
+  onClickLogin = (e) => {
+    e.preventDefault();
     const {username, password} = this.state;
-    await authentication.authenticate(username, password);
-    if (authentication.authenticate) {
-        this.setState({redirectToReferrer:true});
-    }
+    
+    this.props.login(username, password);
   }
 
   render () {
-    const { from } = this.props.location.state || { from: { pathname: '/' } }
-    const { redirectToReferrer } = this.state
-    
-    if (redirectToReferrer === true) {
-        console.log('redirect to ', from);
-        return <Redirect to={from} />
-    }
-
+   
+    const { loggingIn } = this.props;
 
     return (
     <MuiThemeProvider muiTheme={ThemeDefault}>
@@ -141,7 +136,8 @@ class LoginPage extends React.Component {
                                 style={this.styles.loginBtn}
                                 onClick = {this.onClickLogin}
                                 />
-               
+                  {loggingIn && 
+                    <span>...</span>}
               </div>
             </form>
           </Paper>
@@ -166,6 +162,22 @@ class LoginPage extends React.Component {
     </MuiThemeProvider>
     );
   }
+} 
+
+const mapStateToProps = (state)=> {
+  const { loggingIn } = state.authentication;
+  return {
+    loggingIn:loggingIn
+  }
+}
+const mapDispatchToProps = (dispatch) =>{
+  return {
+    login : (username, password) => {
+      dispatch(login(username, password));
+    }
+  }
 }
 
-export default LoginPage;
+
+export default connect(mapStateToProps, mapDispatchToProps)(LoginPage);
+
