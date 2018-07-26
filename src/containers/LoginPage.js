@@ -6,6 +6,7 @@ import Paper from 'material-ui/Paper';
 import RaisedButton from 'material-ui/RaisedButton';
 import FlatButton from 'material-ui/FlatButton';
 import Checkbox from 'material-ui/Checkbox';
+import Typography from '@material-ui/core/Typography';
 import {grey500, white} from 'material-ui/styles/colors';
 import PersonAdd from 'material-ui/svg-icons/social/person-add';
 import Help from 'material-ui/svg-icons/action/help';
@@ -77,6 +78,15 @@ class LoginPage extends React.Component {
     btnSpan: {
       marginLeft: 5
     },
+    loginAlertDanger: {
+      color: '#a94442',
+      backgroundColor: '#f2dede',
+      borderColor: '#ebccd1',
+      padding:10,
+      marginBottom:20,
+      border: '1px solid transparent',
+      borderRadius: 4
+    }
   }
 
 
@@ -94,13 +104,16 @@ class LoginPage extends React.Component {
 
   render () {
    
-    const { loggingIn } = this.props;
+    const { loggingIn, loggedInFail } = this.props;
 
     return (
     <MuiThemeProvider muiTheme={ThemeDefault}>
       <div>
         <div style={this.styles.loginContainer}>
-
+          {loggedInFail && <Typography style={this.styles.loginAlertDanger}>
+              Invalid username or password
+          </Typography>
+          }
           <Paper style={this.styles.paper}>
 
             <form>
@@ -163,9 +176,10 @@ class LoginPage extends React.Component {
 } 
 
 const mapStateToProps = (state)=> {
-  const { loggingIn } = state.authentication;
+  const { loggingIn, loggedInFail } = state.authentication;
   return {
-    loggingIn:loggingIn
+    loggingIn:loggingIn,
+    loggedInFail:loggedInFail
   }
 }
 const mapDispatchToProps = (dispatch) =>{

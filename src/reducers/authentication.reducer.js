@@ -19,7 +19,10 @@ const authentication = (state = initialState, action) => {
             }
         }
         case 'login_failure':
-            return {}
+            return {
+                loggedInFail: true,
+                payload:{}
+            }
         case 'logout_request':
             return {
                 loggedIn: false,
