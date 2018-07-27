@@ -4,7 +4,9 @@ import GridOn from 'material-ui/svg-icons/image/grid-on';
 import PermIdentity from 'material-ui/svg-icons/action/perm-identity';
 import Web from 'material-ui/svg-icons/av/web';
 
-const admin =  [
+const defaultMenus = [];
+
+const administrator =  [
     { text: 'DashBoard', icon: <Assessment/>, link: '/dashboard' },
     { text: 'Radio Photographer', icon: <Web/>, link: '/RadioPhotoGrapherPage' },
     { text: 'Radio Center', icon: <GridOn/>, link: '/RadioCenterPage' },
@@ -12,7 +14,8 @@ const admin =  [
 ];
 
 const menu = {
-  admin
+  administrator: administrator,
+  defaultMenus: defaultMenus
 }
 
 export default menu;

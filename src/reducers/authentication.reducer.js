@@ -26,7 +26,7 @@ const authentication = (state = initialState, action) => {
         case 'logout_request':
             return {
                 loggedIn: false,
-                payload: {}
+                payload: { username: '', role:'' }
             }
         default:
             return state;

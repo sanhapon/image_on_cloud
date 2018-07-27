@@ -1,11 +1,10 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import Header from '../components/Header';
 import LeftDrawer from '../components/LeftDrawer';
 import withWidth, {LARGE, SMALL} from 'material-ui/utils/withWidth';
 import ThemeDefault from '../theme-default';
-import Data from '../data';
+import { connect } from 'react-redux';
 
 class App extends React.Component {
 
@@ -24,11 +23,10 @@ class App extends React.Component {
 
   handleChangeRequestNavDrawer() {
     this.setState({
-      navDrawerOpen: !this.state.navDrawerOpen
+      navDrawerOpen: this.props.loggedIn &&  !this.state.navDrawerOpen
     });
   }
 
-  
   render() {
     let { navDrawerOpen } = this.state;
     const paddingLeftDrawerOpen = 236;
@@ -49,10 +47,9 @@ class App extends React.Component {
           <Header styles={styles.header}
                   handleChangeRequestNavDrawer={this.handleChangeRequestNavDrawer.bind(this)}/>
 
-            <LeftDrawer navDrawerOpen={navDrawerOpen}
-                        menus={Data.menus}
-                        username="User Admin"/>
-
+            { this.props.loggedIn && 
+                <LeftDrawer navDrawerOpen={navDrawerOpen}/>
+            }
             <div style={styles.container}>
               {this.props.children}
             </div>
@@ -62,9 +59,13 @@ class App extends React.Component {
   }
 }
 
-App.propTypes = {
-  children: PropTypes.element,
-  width: PropTypes.number
-};
 
-export default withWidth()(App);
+const mapStateToProps = (state) =>{
+  const { loggedIn } = state.authentication
+  
+  return {
+    loggedIn: loggedIn
+  }
+}
+export default connect(mapStateToProps)(withWidth()(App));
+//export default withWidth()(App);

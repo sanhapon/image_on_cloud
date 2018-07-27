@@ -28,6 +28,6 @@ export const logout = () => {
 }
 
 const login_request = (user) => { return {type:'login_request', payload:user.username}};
-const login_success = (user) => { return {type:'login_success', payload: {username:user.username, role:'staff'}}};
+const login_success = (user) => { return {type:'login_success', payload: {username:user.username, role:'administrator'}}};
 const login_failure = (user) => { return {type:'login_failure', payload:user.username}};
 const logout_request = () => { return {type:'logout_request'}};

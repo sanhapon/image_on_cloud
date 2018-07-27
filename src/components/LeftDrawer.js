@@ -1,16 +1,17 @@
 import React from 'react';
-import PropTypes from 'prop-types';
+
 import Drawer from 'material-ui/Drawer';
-import {spacing, typography} from 'material-ui/styles';
-import {white, blue600} from 'material-ui/styles/colors';
+import { spacing, typography } from 'material-ui/styles';
+import { white, blue600 } from 'material-ui/styles/colors';
 import MenuItem from 'material-ui/MenuItem';
 import { Link } from 'react-router-dom'
 import Avatar from 'material-ui/Avatar';
+import menu from '../data/menu';
+import { connect } from 'react-redux';
 
-const LeftDrawer = (props) => {
-  let { navDrawerOpen } = props;
+class LeftDrawer extends React.Component {
 
-  const styles = {
+  styles = {
     logo: {
       cursor: 'pointer',
       fontSize: 22,
@@ -28,7 +29,7 @@ const LeftDrawer = (props) => {
     avatar: {
       div: {
         padding: '15px 0 20px 15px',
-        backgroundImage:  'url(' + require('../images/material_bg.png') + ')',
+        backgroundImage: 'url(' + require('../images/material_bg.png') + ')',
         height: 45
       },
       icon: {
@@ -47,38 +48,50 @@ const LeftDrawer = (props) => {
     }
   };
 
-  return (
-    <Drawer
-      docked={true}
-      open={navDrawerOpen}>
-        <div style={styles.logo}>
+  getMenuItems(role) {
+    
+    return menu[role];
+  };
+
+
+  render() {
+    const { navDrawerOpen, username, role} = this.props;
+    return (
+      <Drawer
+        docked={true}
+        open={navDrawerOpen}>
+        <div style={this.styles.logo}>
           Material Admin
         </div>
-        <div style={styles.avatar.div}>
+        <div style={this.styles.avatar.div}>
           <Avatar src="http://www.material-ui.com/images/uxceo-128.jpg"
-                  size={50}
-                  style={styles.avatar.icon}/>
-          <span style={styles.avatar.span}>{props.username}</span>
+            size={50}
+            style={this.styles.avatar.icon} />
+          <span style={this.styles.avatar.span}>{username}</span>
         </div>
         <div>
-          {props.menus.map((menu, index) =>
+          {this.getMenuItems(role).map((menu, index) =>
             <MenuItem
               key={index}
-              style={styles.menuItem}
+              style={this.styles.menuItem}
               primaryText={menu.text}
               leftIcon={menu.icon}
-              containerElement={<Link to={menu.link}/>}
+              containerElement={<Link to={menu.link} />}
             />
           )}
         </div>
-    </Drawer>
-  );
-};
+      </Drawer>
+    );
+  }
+}
 
-LeftDrawer.propTypes = {
-  navDrawerOpen: PropTypes.bool,
-  menus: PropTypes.array,
-  username: PropTypes.string,
-};
+const mapStateToProps = (state) => {
+  const { loggedIn, payload } = state.authentication
 
-export default LeftDrawer;
+  return {
+    loggedIn: loggedIn,
+    role: payload ? payload.role : '',
+    username: payload? payload.username : ''
+  }
+}
+export default connect(mapStateToProps)(LeftDrawer);
