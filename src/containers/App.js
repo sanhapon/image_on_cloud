@@ -51,6 +51,7 @@ class App extends React.Component {
                 <LeftDrawer navDrawerOpen={navDrawerOpen}/>
             }
             <div style={styles.container}>
+              {/* {this.props.loggedIn? this.props.children: <LoginPage /> } */}
               {this.props.children}
             </div>
         </div>
@@ -67,5 +68,6 @@ const mapStateToProps = (state) =>{
     loggedIn: loggedIn
   }
 }
-export default connect(mapStateToProps)(withWidth()(App));
-//export default withWidth()(App);
+export default connect(mapStateToProps, null, null, {pure:false})(withWidth()(App));
+//export default connect(mapStateToProps)(withWidth()(App));
+

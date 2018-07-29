@@ -8,9 +8,9 @@ const defaultMenus = [];
 
 const administrator =  [
     { text: 'DashBoard', icon: <Assessment/>, link: '/dashboard' },
-    { text: 'Radio Photographer', icon: <Web/>, link: '/RadioPhotoGrapherPage' },
-    { text: 'Radio Center', icon: <GridOn/>, link: '/RadioCenterPage' },
-    { text: 'Patient', icon: <PermIdentity/>, link: '/PatientPage' }
+    { text: 'Radio Photographer', icon: <Web/>, link: '/admin/radioPhotoGrapherListPage' },
+    { text: 'Radio Center', icon: <GridOn/>, link: '/admin/radioCenterPage' },
+    { text: 'Patient', icon: <PermIdentity/>, link: '/admin/patientPage' }
 ];
 
 const menu = {

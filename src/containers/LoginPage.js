@@ -18,7 +18,8 @@ class LoginPage extends React.Component {
 
   constructor(props) {
     super(props);
-    this.state = { username:'', password:'' };
+    this.state = { username:'', password:''};
+    this.onClickLogin = this.onClickLogin.bind(this);
   }
   
   styles = {
@@ -98,13 +99,14 @@ class LoginPage extends React.Component {
   onClickLogin = (e) => {
     e.preventDefault();
     const {username, password} = this.state;
-    
-    this.props.login(username, password);
+    const toPath = this.props.location.state? this.props.location.state.from.pathname :'/dashboard';
+    this.props.login(username, password, toPath);
   }
 
   render () {
    
     const { loggingIn, loggedInFail } = this.props;
+   
 
     return (
     <MuiThemeProvider muiTheme={ThemeDefault}>
@@ -142,11 +144,12 @@ class LoginPage extends React.Component {
                 />
 
                
-                  <RaisedButton label="Login"
+                <RaisedButton label="Login"
                                 primary={true}
                                 style={this.styles.loginBtn}
                                 onClick = {this.onClickLogin}
                                 />
+                
                   {loggingIn && 
                     <span>...</span>}
               </div>
@@ -184,8 +187,8 @@ const mapStateToProps = (state)=> {
 }
 const mapDispatchToProps = (dispatch) =>{
   return {
-    login : (username, password) => {
-      dispatch(login(username, password));
+    login : (username, password, toPath) => {
+      dispatch(login(username, password, toPath));
     }
   }
 }

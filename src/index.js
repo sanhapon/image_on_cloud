@@ -1,11 +1,12 @@
 import React from 'react';
-import {  Router, Route, Switch } from 'react-router-dom';
+import { Router, Route, Switch } from 'react-router-dom';
 import ReactDOM from 'react-dom';
 import injectTapEventPlugin from 'react-tap-event-plugin';
 import App from './containers/App';
 import LoginPage from './containers/LoginPage';
 import DashboardPage from './containers/DashboardPage';
 import PrivateRoute from './router/PrivateRoute';
+import { RadioPhotographerListPage } from './containers/admin';
 import { Provider } from 'react-redux';
 import store from './store';
 import history from './helper/history';
@@ -25,8 +26,9 @@ ReactDOM.render(
                 <App>
                     <Switch>
                         <Route path="/login" component={LoginPage} />
-                        <PrivateRoute path="/" component={DashboardPage} />
+                        <PrivateRoute exact path="/" component={DashboardPage} />
                         <PrivateRoute path="/dashboard" component={DashboardPage} />
+                        <PrivateRoute path="/admin/radioPhotoGrapherListPage" component={RadioPhotographerListPage}/>
                     </Switch>
                 </App>
 

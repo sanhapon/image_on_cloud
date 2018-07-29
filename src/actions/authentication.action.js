@@ -1,16 +1,15 @@
 import history from '../helper/history';
 
-export const login = (username, password) => {
+export const login = (username, password, toPath) => {
 
     return dispatch => {
         dispatch(login_request({username:username}));
 
-        if(username === 'admin' && password === 'nocnocnoc') {
+        if(username === 'admin' && password === 'noc') {
             const user = {username:username, role:'administrator'};
             localStorage.setItem('user', JSON.stringify(user) );
             dispatch(login_success({username:username}));
-            
-            history.push('/dashboard');
+            history.push(toPath);
 
         } else {
             dispatch(login_failure({username:username}));
