@@ -117,7 +117,6 @@ class LoginPage extends React.Component {
           </Typography>
           }
           <Paper style={this.styles.paper}>
-
             <form>
               <TextField
                 hintText="E-mail"
@@ -142,8 +141,6 @@ class LoginPage extends React.Component {
                   labelStyle={this.styles.checkRemember.labelStyle}
                   iconStyle={this.styles.checkRemember.iconStyle}
                 />
-
-               
                 <RaisedButton label="Login"
                                 primary={true}
                                 style={this.styles.loginBtn}
@@ -163,7 +160,6 @@ class LoginPage extends React.Component {
               style={this.styles.flatButton}
               icon={<PersonAdd />}
             />
-
             <FlatButton
               label="Forgot Password?"
               href="/"

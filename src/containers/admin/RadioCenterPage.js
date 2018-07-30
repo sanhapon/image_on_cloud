@@ -8,12 +8,19 @@ import Toggle from 'material-ui/Toggle';
 import DatePicker from 'material-ui/DatePicker';
 import {grey400} from 'material-ui/styles/colors';
 import Divider from 'material-ui/Divider';
+import PageBase from '../../components/PageBase';
+import province from '../../data/province';
+import getAmphor from '../../data/amphor';
 
-class RadioPhotographerPage extends React.Component {
+class RadioCenterPage extends React.Component {
 
     constructor(props){
         super(props);
-        this.state = {};
+        this.state = { 
+            theProvince : {pid:-1, name:'จังหวัด'} ,
+            theAmphor : {pid:-1, name:'อำเภอ'},
+            amphorList : []
+        };
     }
 
     styles = {
@@ -35,23 +42,40 @@ class RadioPhotographerPage extends React.Component {
         }
     };
 
+    handleProvinceChanged = (e, index, value) => {
+        const amphorList = getAmphor(value.pid);
+        this.setState( {theProvince: {pid:value.pid, name:value.name}} ); 
+        this.setState( {amphorList:amphorList} );
+    }
+
+    handleAmphorhanged = (e, index, value) => {
+        this.setState( {theAmphor: {pid:value.pid, name:value.name}} ); 
+    }
+
     render() {
+        const { theProvince, theAmphor, amphorList} = this.state;
+
         return (
-            <div>
+            <PageBase navigation='/admin/radioCenter' title='ใส่ข้อมูลศูนย์'>
                 <form>
                     <TextField
-                        hintText="Name"
-                        floatingLabelText="Name"
+                        hintText="ชื่อศูนย์บริการ"
+                        floatingLabelText="ชื่อศูนย์บริการ"
                         fullWidth={true}
                     />
+                    <SelectField
+                        floatingLabelText={theProvince.name}
+                        fullWidth={true}
+                        onChange={this.handleProvinceChanged}>
+                        { province.map((p) => <MenuItem key={p.pid} primaryText={p.name} value={p}/>) }
+                    </SelectField>
 
                     <SelectField
-                        floatingLabelText="City"
-                        value=""
-                        fullWidth={true}>
-                        <MenuItem key={0} primaryText="London"/>
-                        <MenuItem key={1} primaryText="Paris"/>
-                        <MenuItem key={2} primaryText="Rome"/>
+                        floatingLabelText={theAmphor.name}
+                        fullWidth={true}
+                        onChange={this.handleAmphorhanged}>
+                        { amphorList.map((p)=><MenuItem key={p.pid} primaryText={p.name} value={p}/>) }
+                       
                     </SelectField>
 
                     <DatePicker
@@ -78,9 +102,9 @@ class RadioPhotographerPage extends React.Component {
                                         primary={true}/>
                         </div>
                 </form>
-            </div>
+            </PageBase>
         );
     }
 };
 
-export default RadioPhotographerPage;
+export default RadioCenterPage;

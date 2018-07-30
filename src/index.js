@@ -6,7 +6,7 @@ import App from './containers/App';
 import LoginPage from './containers/LoginPage';
 import DashboardPage from './containers/DashboardPage';
 import PrivateRoute from './router/PrivateRoute';
-import { RadioPhotographerListPage } from './containers/admin';
+import { RadioPhotographerListPage, RadioPhotographerPage, RadioCenterPage } from './containers/admin';
 import { Provider } from 'react-redux';
 import store from './store';
 import history from './helper/history';
@@ -28,7 +28,10 @@ ReactDOM.render(
                         <Route path="/login" component={LoginPage} />
                         <PrivateRoute exact path="/" component={DashboardPage} />
                         <PrivateRoute path="/dashboard" component={DashboardPage} />
+                        <PrivateRoute path="/admin/radioCenterPage" component={RadioCenterPage} />
+                        <PrivateRoute path="/admin/radioPhotographerPage" component={RadioPhotographerPage} />
                         <PrivateRoute path="/admin/radioPhotoGrapherListPage" component={RadioPhotographerListPage}/>
+
                     </Switch>
                 </App>
 
