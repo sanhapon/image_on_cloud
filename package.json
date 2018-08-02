@@ -2,6 +2,7 @@
   "name": "img_on_cloud",
   "version": "0.1.0",
   "private": true,
+  "proxy": "http://localhost:8000",
   "dependencies": {
     "@material-ui/core": "^1.4.1",
     "flexboxgrid": "^6.3.1",
