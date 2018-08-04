@@ -1,6 +1,7 @@
 import React from 'react';
+import { connect } from 'react-redux';
+import { save } from '../../actions/save.action';
 import { Link } from 'react-router-dom'
-import fetch from 'node-fetch';
 import RaisedButton from 'material-ui/RaisedButton';
 import MenuItem from 'material-ui/MenuItem';
 import TextField from 'material-ui/TextField';
@@ -9,7 +10,7 @@ import { grey400 } from 'material-ui/styles/colors';
 import PageBase from '../../components/PageBase';
 import province from '../../data/province';
 import getAmphor from '../../data/amphor';
-
+import AlertDialog from '../../components/AlertDialog';
 
 class RadioCenterPage extends React.Component {
 
@@ -21,7 +22,8 @@ class RadioCenterPage extends React.Component {
             amphorList: [],
             theCenter:'',
             theAddress1: '',
-            theAddress2: ''
+            theAddress2: '',
+            showDialog: false
         };
     }
 
@@ -60,19 +62,15 @@ class RadioCenterPage extends React.Component {
 
     OnSaveBtnClick = (e) => {
         const input = [{ center: this.state.theCenter, address1: this.state.theAddress1, address2: this.state.theAddress2 }];
-        fetch('http://localhost:3000/center', { 
-            method: 'POST', 
-            body: JSON.stringify(input),
-            headers: { 'Content-Type': 'application/json' }})
-        .then(res => res.json())
-        .then(json => console.log(json));
+        this.props.save('http://localhost:3000/api/center', input);
     }
 
     render() {
-        const { theProvince, theAmphor, amphorList } = this.state;
+        const { theProvince, theAmphor, amphorList, status } = this.state;
 
         return (
             <PageBase title='ใส่ข้อมูลศูนย์'>
+                <AlertDialog currentRoute="RadioCenterPage"/>
                 <form>
                     <TextField
                         name="theCenter"
@@ -107,7 +105,6 @@ class RadioCenterPage extends React.Component {
                         fullWidth={true}
                         onChange={this.handleAmphorhanged}>
                         {amphorList.map((p) => <MenuItem key={p.pid} primaryText={p.name} value={p} />)}
-
                     </SelectField>
 
                     <TextField
@@ -120,11 +117,10 @@ class RadioCenterPage extends React.Component {
                         <Link to="/">
                             <RaisedButton label="Cancel" />
                         </Link>
-
                         <RaisedButton label="Save"
                             style={this.styles.saveButton}
-                            type="submit"
                             onClick={this.OnSaveBtnClick}
+                            disabled={status === 0}
                             primary={true} />
                     </div>
                 </form>
@@ -133,4 +129,19 @@ class RadioCenterPage extends React.Component {
     }
 };
 
-export default RadioCenterPage;
+const mapStateToProps = (state) => {
+    const { status, payload } = state.saveAlert;
+    return { 
+        status : status,
+        stausMsg: payload.msg
+    };
+}
+
+const mapDispatchToProps =(dispath) => {
+    return {
+        save:  (uri, data) => {
+            dispath(save(uri, data));
+        }
+    }
+}
+export default connect(mapStateToProps, mapDispatchToProps)(RadioCenterPage);
