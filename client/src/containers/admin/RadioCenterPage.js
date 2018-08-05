@@ -23,12 +23,12 @@ class RadioCenterPage extends React.Component {
                 theCenter:'',
                 theAddress1: '',
                 theAddress2: '',
-                //theProvince:'',
-                //theAmphor: '',
-                theProvince: { pid: -1, name: 'เลือกจังหวัด' },
-                theAmphor: { pid: -1, name: 'เลือกอำเภอ' },
+                theProvince:'',
+                theAmphor: '',
                 theNumber: ''
             },
+            displayedProvince: '',
+            displayedAmphor:'',
             errors : { },
             dialog: {
                 showDialog: false,
@@ -60,12 +60,16 @@ class RadioCenterPage extends React.Component {
 
     handleProvinceChanged = (e, index, value) => {
         const amphorList = getAmphor(value.pid);
-        this.setState({ theProvince: { pid: value.pid, name: value.name } });
         this.setState({ amphorList: amphorList });
+        const { dataToSave } = this.state;
+        dataToSave.theProvince = value.pid;
+        this.setState({displayedProvince: value.name, dataToSave : dataToSave})
     }
 
     handleAmphorhanged = (e, index, value) => {
-        this.setState({ theAmphor: { pid: value.pid, name: value.name } });
+        const { dataToSave } = this.state;
+        dataToSave.theAmphor = value.pid;
+        this.setState({displayedAmphor: value.name, dataToSave : dataToSave})
     }
 
     handleTextFieldChanged = (e) => {
@@ -132,9 +136,8 @@ class RadioCenterPage extends React.Component {
         );
     }
 
-
     render =() => {
-        const { dataToSave, amphorList } = this.state;
+        const { dataToSave, amphorList, displayedProvince, displayedAmphor } = this.state;
 
         return (
             <PageBase title='ใส่ข้อมูลศูนย์'>
@@ -162,7 +165,7 @@ class RadioCenterPage extends React.Component {
                 />
                 <SelectField
                     name="theProvince"
-                    floatingLabelText={dataToSave.theProvince.name}
+                    floatingLabelText={ displayedProvince|| "เลือกจังหวัด"}
                     fullWidth={true}
                     errorText={this.state.errors["theProvince"]}
                     onChange={this.handleProvinceChanged}
@@ -172,7 +175,7 @@ class RadioCenterPage extends React.Component {
 
                 <SelectField
                     name="theAmphor"
-                    floatingLabelText={dataToSave.theAmphor.name}
+                    floatingLabelText={ displayedAmphor || "เลือกอำเภอ"}
                     fullWidth={true}
                     errorText={this.state.errors["theAmphor"]}
                     onChange={this.handleAmphorhanged}
