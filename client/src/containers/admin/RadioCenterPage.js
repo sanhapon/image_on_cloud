@@ -16,33 +16,26 @@ class RadioCenterPage extends React.Component {
 
     constructor(props) {
         super(props);
+
         this.state = {
-            
             amphorList: [],
             dataToSave : {
                 theCenter:'',
                 theAddress1: '',
                 theAddress2: '',
-                theProvince: { pid: -1, name: 'จังหวัด' },
-                theAmphor: { pid: -1, name: 'อำเภอ' },
+                //theProvince:'',
+                //theAmphor: '',
+                theProvince: { pid: -1, name: 'เลือกจังหวัด' },
+                theAmphor: { pid: -1, name: 'เลือกอำเภอ' },
+                theNumber: ''
             },
-            errors : {
-                theCenter: '',
-                theAddress1: '',
-                theAddress2: '',
-                
-            },
-                
-            
-
-            
+            errors : { },
             dialog: {
                 showDialog: false,
                 msg: ''
             },
             saveStatus:0
         };
-
         this.onDialogBtnClick = this.onDialogBtnClick.bind(this);   
     }
 
@@ -81,8 +74,21 @@ class RadioCenterPage extends React.Component {
         this.setState({dataToSave : dataToSave})
     }
 
+    validateInput = ()=>{
+        const { dataToSave, errors } = this.state;
+        const elements = ['theNumber'];
+        for (const [key, value] of Object.entries(dataToSave)) {            
+            if (elements.indexOf(key) === -1) {
+                errors[key] = value === ''? 'ต้องใส่ข้อมูล': '';
+            }
+        }
+        this.setState({errors:errors});
+        return Object.values(errors).filter(v=>v !== '').length === 0;
+    }
+
     onSaveBtnClick = async (e) => {
         const { dataToSave } = this.state;
+        if (!this.validateInput()) return;
 
         try {
             const result = await fetch('http://localhost:3000/api/center', { 
@@ -128,7 +134,7 @@ class RadioCenterPage extends React.Component {
 
 
     render =() => {
-        const { theProvince, theAmphor, amphorList } = this.state;
+        const { dataToSave, amphorList } = this.state;
 
         return (
             <PageBase title='ใส่ข้อมูลศูนย์'>
@@ -156,17 +162,21 @@ class RadioCenterPage extends React.Component {
                 />
                 <SelectField
                     name="theProvince"
-                    floatingLabelText={theProvince.name}
+                    floatingLabelText={dataToSave.theProvince.name}
                     fullWidth={true}
-                    onChange={this.handleProvinceChanged}>
-                    {province.map((p) => <MenuItem key={p.pid} primaryText={p.name} value={p} />)}
+                    errorText={this.state.errors["theProvince"]}
+                    onChange={this.handleProvinceChanged}
+                >
+                    {province.map((p) => <MenuItem key={p.pid} primaryText={p.name} value={p} />)}  
                 </SelectField>
 
                 <SelectField
                     name="theAmphor"
-                    floatingLabelText={theAmphor.name}
+                    floatingLabelText={dataToSave.theAmphor.name}
                     fullWidth={true}
-                    onChange={this.handleAmphorhanged}>
+                    errorText={this.state.errors["theAmphor"]}
+                    onChange={this.handleAmphorhanged}
+                >
                     {amphorList.map((p) => <MenuItem key={p.pid} primaryText={p.name} value={p} />)}
                 </SelectField>
 
@@ -175,7 +185,6 @@ class RadioCenterPage extends React.Component {
                     hintText="หมายเลขโทรศัพท์"
                     floatingLabelText="หมายเลขโทรศัพท์"
                     fullWidth={true}
-                    errorText={this.state.errors["theNumber"]}
                 />
                 
                 <div style={this.styles.buttons}>
