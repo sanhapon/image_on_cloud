@@ -9,11 +9,16 @@ export const backToList = (currentRoute) => {
         default : toRoute = '/';
             break;
     }
-    history.push(toRoute)
-
+   
     return dispatch => {
-        dispatch(clearAlertStatus());
+        dispatch(clearAlertStatus('กำลังเก็บข้อมูล'));
+        history.push(toRoute)
     }
 }
 
-const clearAlertStatus = () => { return {type:'clear_alert_status', payload:{msg:'กำลังเก็บข้อมูล'}}};
+export const stayInCurrentRoute = () => {
+    return dispatch => dispatch(clearAlertStatus(''));
+}
+
+
+const clearAlertStatus = (msg) => { return {type:'clear_alert_status', payload:{msg:msg}}};

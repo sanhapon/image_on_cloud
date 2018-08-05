@@ -1,6 +1,4 @@
 import React from 'react';
-import { connect } from 'react-redux';
-import { save } from '../../actions/save.action';
 import { Link } from 'react-router-dom'
 import RaisedButton from 'material-ui/RaisedButton';
 import MenuItem from 'material-ui/MenuItem';
@@ -10,21 +8,42 @@ import { grey400 } from 'material-ui/styles/colors';
 import PageBase from '../../components/PageBase';
 import province from '../../data/province';
 import getAmphor from '../../data/amphor';
-import AlertDialog from '../../components/AlertDialog';
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogTitle from '@material-ui/core/DialogTitle';
 
 class RadioCenterPage extends React.Component {
 
     constructor(props) {
         super(props);
         this.state = {
-            theProvince: { pid: -1, name: 'จังหวัด' },
-            theAmphor: { pid: -1, name: 'อำเภอ' },
+            
             amphorList: [],
-            theCenter:'',
-            theAddress1: '',
-            theAddress2: '',
-            showDialog: false
+            dataToSave : {
+                theCenter:'',
+                theAddress1: '',
+                theAddress2: '',
+                theProvince: { pid: -1, name: 'จังหวัด' },
+                theAmphor: { pid: -1, name: 'อำเภอ' },
+            },
+            errors : {
+                theCenter: '',
+                theAddress1: '',
+                theAddress2: '',
+                
+            },
+                
+            
+
+            
+            dialog: {
+                showDialog: false,
+                msg: ''
+            },
+            saveStatus:0
         };
+
+        this.onDialogBtnClick = this.onDialogBtnClick.bind(this);   
     }
 
     styles = {
@@ -57,91 +76,121 @@ class RadioCenterPage extends React.Component {
     }
 
     handleTextFieldChanged = (e) => {
-        this.setState({ [e.target.name]: e.target.value})
+        const { dataToSave } = this.state;
+        dataToSave[e.target.name] = e.target.value
+        this.setState({dataToSave : dataToSave})
     }
 
-    OnSaveBtnClick = (e) => {
-        const input = [{ center: this.state.theCenter, address1: this.state.theAddress1, address2: this.state.theAddress2 }];
-        this.props.save('http://localhost:3000/api/center', input);
+    onSaveBtnClick = async (e) => {
+        const { dataToSave } = this.state;
+
+        try {
+            const result = await fetch('http://localhost:3000/api/center', { 
+                method: 'POST', 
+                body: JSON.stringify(dataToSave),
+                headers: { 'Content-Type': 'application/json' }})
+
+            const json = await result.json();
+
+            if ( json.status === 'done') {
+                this.setState({dialog: {showDialog:true, msg: json.msg}, saveStatus:1});
+            
+            } else {
+                const msg = result.status === 200? json.msg: 'ไม่สามาถเก็บข้อมูลได้'
+                this.setState({dialog: {showDialog:true, msg:msg}});
+            }
+        }  catch (err) {
+            this.setState({dialog: {showDialog:true, msg:'ไม่สามาถเก็บข้อมูลได้'}});
+        }
+    }
+    onDialogBtnClick = () => {
+        this.setState({dialog: {showDialog: false, msg : ''}});
+
+        if (this.state.saveStatus ===1) {
+            this.props.history.push('/admin/RadioCenterPageList');
+        }
     }
 
-    render() {
-        const { theProvince, theAmphor, amphorList, status } = this.state;
+    getDialog = () => {
+        return (
+            <Dialog open={ this.state.dialog.showDialog }
+                onClose={this.handleClose}
+                aria-labelledby="alert-dialog-title"
+                aria-describedby="alert-dialog-description"
+            >
+            <DialogTitle id="alert-dialog-title">{this.state.dialog.msg}</DialogTitle>
+            <DialogActions>
+              <RaisedButton label="ตกลง" onClick={this.onDialogBtnClick} primary={true} />  
+            </DialogActions>
+          </Dialog>
+        );
+    }
+
+
+    render =() => {
+        const { theProvince, theAmphor, amphorList } = this.state;
 
         return (
             <PageBase title='ใส่ข้อมูลศูนย์'>
-                <AlertDialog currentRoute="RadioCenterPage"/>
-                <form>
-                    <TextField
-                        name="theCenter"
-                        hintText="ชื่อศูนย์บริการ"
-                        floatingLabelText="ชื่อศูนย์บริการ"
-                        onChange={this.handleTextFieldChanged}
-                        fullWidth={true}
-                    />
-                    <TextField
-                        name="theAddress1"
-                        hintText="ที่อยู่ 1"
-                        floatingLabelText="ที่อยู่ 1"
-                        onChange={this.handleTextFieldChanged}
-                        fullWidth={true}
-                    />
-                    <TextField
-                        name="theAddress2"
-                        hintText="ที่อยู่ 2"
-                        floatingLabelText="ที่อยู่ 2"
-                        onChange={this.handleTextFieldChanged}
-                        fullWidth={true}
-                    />
-                    <SelectField
-                        floatingLabelText={theProvince.name}
-                        fullWidth={true}
-                        onChange={this.handleProvinceChanged}>
-                        {province.map((p) => <MenuItem key={p.pid} primaryText={p.name} value={p} />)}
-                    </SelectField>
+                {this.getDialog()}
+                <TextField
+                    name="theCenter"
+                    floatingLabelText="ชื่อศูนย์บริการ"
+                    onChange={this.handleTextFieldChanged}
+                    fullWidth={true}
+                    errorText={this.state.errors["theCenter"]}
+                />
+                <TextField
+                    name="theAddress1"
+                    floatingLabelText="ที่อยู่ 1"
+                    onChange={this.handleTextFieldChanged}
+                    fullWidth={true}
+                    errorText={this.state.errors["theAddress1"]}
+                />
+                <TextField
+                    name="theAddress2"
+                    floatingLabelText="ที่อยู่ 2"
+                    onChange={this.handleTextFieldChanged}
+                    fullWidth={true}
+                    errorText={this.state.errors["theAddress2"]}
+                />
+                <SelectField
+                    name="theProvince"
+                    floatingLabelText={theProvince.name}
+                    fullWidth={true}
+                    onChange={this.handleProvinceChanged}>
+                    {province.map((p) => <MenuItem key={p.pid} primaryText={p.name} value={p} />)}
+                </SelectField>
 
-                    <SelectField
-                        floatingLabelText={theAmphor.name}
-                        fullWidth={true}
-                        onChange={this.handleAmphorhanged}>
-                        {amphorList.map((p) => <MenuItem key={p.pid} primaryText={p.name} value={p} />)}
-                    </SelectField>
+                <SelectField
+                    name="theAmphor"
+                    floatingLabelText={theAmphor.name}
+                    fullWidth={true}
+                    onChange={this.handleAmphorhanged}>
+                    {amphorList.map((p) => <MenuItem key={p.pid} primaryText={p.name} value={p} />)}
+                </SelectField>
 
-                    <TextField
-                        hintText="หมายเลขโทรศัพท์"
-                        floatingLabelText="หมายเลขโทรศัพท์"
-                        fullWidth={true}
-                    />
-                    
-                    <div style={this.styles.buttons}>
-                        <Link to="/">
-                            <RaisedButton label="Cancel" />
-                        </Link>
-                        <RaisedButton label="Save"
-                            style={this.styles.saveButton}
-                            onClick={this.OnSaveBtnClick}
-                            disabled={status === 0}
-                            primary={true} />
-                    </div>
-                </form>
+                <TextField
+                    name="theNumber"
+                    hintText="หมายเลขโทรศัพท์"
+                    floatingLabelText="หมายเลขโทรศัพท์"
+                    fullWidth={true}
+                    errorText={this.state.errors["theNumber"]}
+                />
+                
+                <div style={this.styles.buttons}>
+                    <Link to="/">
+                        <RaisedButton label="Cancel" />
+                    </Link>
+                    <RaisedButton label="Save"
+                        style={this.styles.saveButton}
+                        onClick={this.onSaveBtnClick}
+                        disabled={this.state.saveStatus !== 0}
+                        primary={true} />
+                </div>
             </PageBase>
         );
     }
 };
 
-const mapStateToProps = (state) => {
-    const { status, payload } = state.saveAlert;
-    return { 
-        status : status,
-        stausMsg: payload.msg
-    };
-}
-
-const mapDispatchToProps =(dispath) => {
-    return {
-        save:  (uri, data) => {
-            dispath(save(uri, data));
-        }
-    }
-}
-export default connect(mapStateToProps, mapDispatchToProps)(RadioCenterPage);
+export default RadioCenterPage;
