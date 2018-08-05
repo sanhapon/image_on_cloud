@@ -36,7 +36,6 @@ class RadioCenterPage extends React.Component {
             },
             saveStatus:0
         };
-        this.onDialogBtnClick = this.onDialogBtnClick.bind(this);   
     }
 
     styles = {
@@ -79,13 +78,11 @@ class RadioCenterPage extends React.Component {
     }
 
     validateInput = ()=>{
-        const { dataToSave, errors } = this.state;
+        const { dataToSave } = this.state;
         const elements = ['theNumber'];
-        for (const [key, value] of Object.entries(dataToSave)) {            
-            if (elements.indexOf(key) === -1) {
-                errors[key] = value === ''? 'ต้องใส่ข้อมูล': '';
-            }
-        }
+        const errors = Object.entries(dataToSave)       
+            .filter(([key,value])=> elements.indexOf(key) === -1 && value === '') 
+            .reduce( (acc, cur) => { acc[cur[0]] = 'ต้องใส่ข้อมูล'; return acc}, {});
         this.setState({errors:errors});
         return Object.values(errors).filter(v=>v !== '').length === 0;
     }
@@ -137,7 +134,7 @@ class RadioCenterPage extends React.Component {
     }
 
     render =() => {
-        const { dataToSave, amphorList, displayedProvince, displayedAmphor } = this.state;
+        const { amphorList, displayedProvince, displayedAmphor } = this.state;
 
         return (
             <PageBase title='ใส่ข้อมูลศูนย์'>
