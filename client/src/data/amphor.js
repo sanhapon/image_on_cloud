@@ -1,6 +1,6 @@
 //https://raw.githubusercontent.com/ignitry/thai-tambons/master/amphoes/json/th.json
 
-const amphor = [
+export const amphor = [
   {
     "pid": "1001",
     "name": "พระนคร",
@@ -4643,8 +4643,7 @@ const amphor = [
   }
 ]
 
-const getAmphor = (changwat_pid) => {
-  console.log("id--", changwat_pid);
+const getAmphor = (changwat_pid) => {  
   const ret = amphor.filter(a=>a.changwat_pid === changwat_pid);
   return ret;
 };

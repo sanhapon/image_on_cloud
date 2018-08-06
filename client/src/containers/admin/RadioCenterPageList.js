@@ -10,6 +10,11 @@ import Paper from '@material-ui/core/Paper';
 import EditIcon from 'material-ui/svg-icons/image/edit';
 import RenderToLayer from 'material-ui/internal/RenderToLayer';
 import { getCenters } from '../../actions/radioCenterPageList.action';
+import province from '../../data/province';
+import { amphor } from '../../data/amphor';
+
+const theProvince = province;
+const theAmphor = amphor;
 
 const styles = theme => ({
   root: {
@@ -23,7 +28,6 @@ const styles = theme => ({
 });
 
 class RadioCenterPageList extends React.Component {
-  
   constructor(props) {
     super(props);
     this.state = {
@@ -34,6 +38,10 @@ class RadioCenterPageList extends React.Component {
   componentDidMount = () => {
     this.props.getCenters(0);
   }
+
+  getProvinceName = (pid) => theProvince.filter(p=>p.pid === pid)[0].name;
+
+  getAmphorName = (pid) => theAmphor.filter(p=>p.pid === pid)[0].name;
 
   render = () => {
     const { classes, centers } = this.props;
@@ -57,8 +65,8 @@ class RadioCenterPageList extends React.Component {
                     <TableCell>{c.theCenter}</TableCell>
                     <TableCell>{c.theAddress1}</TableCell>
                     <TableCell>{c.theAddress2}</TableCell>
-                    <TableCell>{c.theProvince}</TableCell>
-                    <TableCell>{c.theAmphor}</TableCell>
+                    <TableCell>{this.getProvinceName(c.theProvince)}</TableCell>
+                    <TableCell>{this.getAmphorName(c.theAmphor)}</TableCell>
                     <TableCell>{c.theNumber}</TableCell>
                     <TableCell><EditIcon /></TableCell>
                 </TableRow>
