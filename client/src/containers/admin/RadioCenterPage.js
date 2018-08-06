@@ -184,6 +184,7 @@ class RadioCenterPage extends React.Component {
                     name="theNumber"
                     hintText="หมายเลขโทรศัพท์"
                     floatingLabelText="หมายเลขโทรศัพท์"
+                    onChange={this.handleTextFieldChanged}
                     fullWidth={true}
                 />
                 
@@ -191,6 +192,7 @@ class RadioCenterPage extends React.Component {
                     <Link to="/">
                         <RaisedButton label="Cancel" />
                     </Link>
+
                     <RaisedButton label="Save"
                         style={this.styles.saveButton}
                         onClick={this.onSaveBtnClick}

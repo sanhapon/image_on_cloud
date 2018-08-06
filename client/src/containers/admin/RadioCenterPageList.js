@@ -1,5 +1,5 @@
 import React from 'react';
-import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 import { withStyles } from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
@@ -7,6 +7,9 @@ import TableCell from '@material-ui/core/TableCell';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
+import EditIcon from 'material-ui/svg-icons/image/edit';
+import RenderToLayer from 'material-ui/internal/RenderToLayer';
+import { getCenters } from '../../actions/radioCenterPageList.action';
 
 const styles = theme => ({
   root: {
@@ -19,53 +22,65 @@ const styles = theme => ({
   },
 });
 
-let id = 0;
-function createData(name, calories, fat, carbs, protein) {
-  id += 1;
-  return { id, name, calories, fat, carbs, protein };
+class RadioCenterPageList extends React.Component {
+  
+  constructor(props) {
+    super(props);
+    this.state = {
+
+    };
+  }
+
+  componentDidMount = () => {
+    this.props.getCenters(0);
+  }
+
+  render = () => {
+    const { classes, centers } = this.props;
+    return (
+        <Paper className={classes.root}>
+        <Table className={classes.table}>
+            <TableHead>
+            <TableRow>
+                <TableCell>ชื่อศูนย์</TableCell>
+                <TableCell>ที่อยู่ 1</TableCell>
+                <TableCell>ที่อยู่ 2</TableCell>
+                <TableCell>จังหวัด</TableCell>
+                <TableCell>อำเภอ</TableCell>
+                <TableCell>หมายเลขโทรศัพท์</TableCell>
+            </TableRow>
+            </TableHead>
+            <TableBody>
+            {centers.map(c => {
+                return (
+                <TableRow>
+                    <TableCell>{c.theCenter}</TableCell>
+                    <TableCell>{c.theAddress1}</TableCell>
+                    <TableCell>{c.theAddress2}</TableCell>
+                    <TableCell>{c.theProvince}</TableCell>
+                    <TableCell>{c.theAmphor}</TableCell>
+                    <TableCell>{c.theNumber}</TableCell>
+                    <TableCell><EditIcon /></TableCell>
+                </TableRow>
+                );
+            })}
+            </TableBody>
+        </Table>
+        </Paper>
+    )
+    };
 }
 
-const data = [
-  createData('Frozen yoghurt', 159, 6.0, 24, 4.0),
-  createData('Ice cream sandwich', 237, 9.0, 37, 4.3),
-  createData('Eclair', 262, 16.0, 24, 6.0),
-  createData('Cupcake', 305, 3.7, 67, 4.3),
-  createData('Gingerbread', 356, 16.0, 49, 3.9),
-];
-
-function RadioCenterPageList(props) {
-  const { classes } = props;
-
-  return (
-    <Paper className={classes.root}>
-      <Table className={classes.table}>
-        <TableHead>
-          <TableRow>
-            <TableCell>Dessert (100g serving)</TableCell>
-            <TableCell numeric>Calories</TableCell>
-            <TableCell numeric>Fat (g)</TableCell>
-            <TableCell numeric>Carbs (g)</TableCell>
-            <TableCell numeric>Protein (g)</TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {data.map(n => {
-            return (
-              <TableRow key={n.id}>
-                <TableCell component="th" scope="row">
-                  {n.name}
-                </TableCell>
-                <TableCell numeric>{n.calories}</TableCell>
-                <TableCell numeric>{n.fat}</TableCell>
-                <TableCell numeric>{n.carbs}</TableCell>
-                <TableCell numeric>{n.protein}</TableCell>
-              </TableRow>
-            );
-          })}
-        </TableBody>
-      </Table>
-    </Paper>
-  );
+const mapStateToProps = (state) => {
+  const { page, centers } = state.centerList;
+  return { page, centers }
 }
 
-export default withStyles(styles)(RadioCenterPageList);
+const mapDispatchToProps = (dispatch) => {
+  return {
+    getCenters: (page) => dispatch(getCenters(page))
+  }
+}
+
+const styledComp = withStyles(styles)(RadioCenterPageList);
+export default connect(mapStateToProps, mapDispatchToProps)(styledComp);
