@@ -1,6 +1,7 @@
 import webpack from 'webpack';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 import autoprefixer from 'autoprefixer';
+import path from 'path';
 
 export default {
   debug: true,
@@ -13,7 +14,8 @@ export default {
   ],
   target: 'web',
   output: {
-    path: `${__dirname}/src`,
+    //path: `${__dirname}/src`,
+    path: path.resolve(__dirname, '..', 'server', 'dist'),
     publicPath: '/',
     filename: 'bundle.js'
   },
