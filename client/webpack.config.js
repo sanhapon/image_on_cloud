@@ -10,14 +10,48 @@ module.exports = {
   entry: 
     // './src/webpack-public-path',
     // 'webpack-hot-middleware/client?reload=true',
-    path.resolve(__dirname, 'src', 'index.js'),
+     path.resolve(__dirname, 'src', 'index.js'),
+  
   
   target: 'web',
   output: {
     //path: `${__dirname}/src`,
     path: path.resolve(__dirname, '..', 'server', 'dist'),
     publicPath: '/',
-    filename: 'bundle.js'
+    filename: 'bundle-[hash].js'
+  },
+  resolve: { 
+    modules: ['./node_modules'],
+    extensions: ['.js', '.scss'] 
+  },
+  module: {
+    rules: [
+        {
+          test: /\.js$/, 
+          exclude: /node_modules/, 
+          loaders: ['babel-loader']
+        },
+        { 
+          test: /(\.css|\.scss)$/, 
+          loaders: [
+            'style-loader', 
+            'css-loader?sourceMap', 
+            {
+              loader: 'postcss-loader',
+              options: {
+                plugins: () => [require('autoprefixer')]
+              }
+            }, 
+            'sass-loader?sourceMap'
+          ]
+        }, 
+        {test: /\.eot(\?v=\d+.\d+.\d+)?$/, loader: 'file-loader'},
+        {test: /\.woff(2)?(\?v=[0-9]\.[0-9]\.[0-9])?$/, loader: "url-loader?limit=10000&mimetype=application/font-woff"},
+        {test: /\.ttf(\?v=\d+\.\d+\.\d+)?$/, loader: 'url-loader?limit=10000&mimetype=application/octet-stream'},
+        {test: /\.svg(\?v=\d+\.\d+\.\d+)?$/, loader: 'url-loader?limit=10000&mimetype=image/svg+xml'},
+        {test: /\.(jpe?g|png|gif)$/i, loader: 'file-loader?name=[name].[ext]'},
+        {test: /\.ico$/, loader: 'file-loader?name=[name].[ext]'},
+    ]
   },
   plugins: [
     new webpack.DefinePlugin({
@@ -25,27 +59,15 @@ module.exports = {
       __DEV__: true
     }),
     new webpack.HotModuleReplacementPlugin(),
-   // new webpack.NoErrorsPlugin(),
-    // new HtmlWebpackPlugin({
-    //   template: 'src/index.ejs',
-    //   minify: {
-    //     removeComments: true,
-    //     collapseWhitespace: true
-    //   },
-    //   inject: true
-    // })
+  
+    new HtmlWebpackPlugin({
+      //template: 'src/index.ejs',
+      // minify: {
+      //   removeComments: true,
+      //   collapseWhitespace: true
+      // },
+      // inject: true
+    })
   ],
-  module: {
-    rules: [
-      {test: /\.js$/, exclude: /node_modules/, loaders: ['babel-loader']},
-      {test: /\.eot(\?v=\d+.\d+.\d+)?$/, loader: 'file'},
-      {test: /\.woff(2)?(\?v=[0-9]\.[0-9]\.[0-9])?$/, loader: "url?limit=10000&mimetype=application/font-woff"},
-      {test: /\.ttf(\?v=\d+\.\d+\.\d+)?$/, loader: 'url?limit=10000&mimetype=application/octet-stream'},
-      {test: /\.svg(\?v=\d+\.\d+\.\d+)?$/, loader: 'url?limit=10000&mimetype=image/svg+xml'},
-      {test: /\.(jpe?g|png|gif)$/i, loader: 'file?name=[name].[ext]'},
-      {test: /\.ico$/, loader: 'file?name=[name].[ext]'},
-      {test: /(\.css|\.scss)$/, loaders: ['style', 'css?sourceMap', 'postcss', 'sass?sourceMap']}
-    ]
-  },
   //postcss: ()=> [autoprefixer]
 };

@@ -47,6 +47,7 @@ class RadioCenterPageList extends React.Component {
     const { classes, centers } = this.props;
     return (
         <Paper className={classes.root}>
+        <h1>hello</h1>
         <Table className={classes.table}>
             <TableHead>
             <TableRow>
