@@ -8,7 +8,7 @@ import webpackHotMiddleware from 'webpack-hot-middleware';
 import webpackConfig from './hotWebpack';
 
 import { register } from './admin/register';
-
+const PORT = process.env.PORT || 3000;
 const app = express();
 const centerRegiter = new register();
 
@@ -39,5 +39,7 @@ app.post('/api/center', (req,res) => {
 app.get('/*', (req, res)=> {  
     res.sendFile(path.join(__dirname , 'index.html'));
 });
-app.listen(3000);
+app.listen(PORT, ()=> {
+    console.log("app listening at port ", PORT);
+});
  

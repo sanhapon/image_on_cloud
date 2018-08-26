@@ -1,6 +1,6 @@
 export const getCenters = page => {
     return async (dispatch) => {
-        const result = await fetch('http://localhost:3000/api/center') //+ page
+        const result = await fetch('/api/center') //+ page
         const centers = await result.json();
 
         dispatch(get_centers_request(centers, page));

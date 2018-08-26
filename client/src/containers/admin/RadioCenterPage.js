@@ -92,7 +92,7 @@ class RadioCenterPage extends React.Component {
         if (!this.validateInput()) return;
 
         try {
-            const result = await fetch('http://localhost:3000/api/center', { 
+            const result = await fetch(' /api/center', { 
                 method: 'POST', 
                 body: JSON.stringify(dataToSave),
                 headers: { 'Content-Type': 'application/json' }})

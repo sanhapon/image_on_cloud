@@ -3,7 +3,7 @@ export const save = (url, data) => {
         dispatch(save_request);
 
         try {
-            const result = await fetch('http://localhost:3000/api/center', { 
+            const result = await fetch('/api/center', { 
                                         method: 'POST', 
                                         body: JSON.stringify(data),
                                         headers: { 'Content-Type': 'application/json' }})
