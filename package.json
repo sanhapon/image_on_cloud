@@ -32,6 +32,6 @@
   "webpack-hot-middleware": "^2.22.3"
  },
  "scripts": {
-  "start": "node ./src/index.js"
+  "start": "node ./server/src/index.js"
  }
 }
